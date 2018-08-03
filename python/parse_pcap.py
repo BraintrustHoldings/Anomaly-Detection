@@ -4,7 +4,8 @@
 #
 # The first 3 sample PCAP files were downloaded from https://wiki.wireshark.org/SampleCaptures#TCP.  
 # The last PCAP file is a trimmed down version of a PCAP file found on 
-# https://www.netresec.com/?page=MACCDC.
+# https://www.netresec.com/?page=MACCDC.  To create maccdc2012_00000_trim2.pcap run:
+# python trim_file.py maccdc2012_00000.pcap maccdc2012_00000_trim2.pcap 10000
 #
 # The output of this script can be compared with the data packets viewed with Wireshark.
 
@@ -40,7 +41,7 @@ def output_packets(fname, num_packets):
 			print(layer3_packet)
 		print()
 
-output_packets("C:\\Users\\kromanik\\IRAD\\Pcap\\tcp-ecn-sample.pcap", 15)
-output_packets("C:\\Users\\kromanik\\IRAD\\Pcap\\udp_lite_normal_coverage_8-20.pcap", 15)
-output_packets("C:\\Users\\kromanik\\IRAD\\Pcap\\PPP-config.pcap", 15)
-output_packets("C:\\Users\\kromanik\\IRAD\\Pcap\\maccdc2012_00000_trim.pcap", 15)
+output_packets("..\\pcap\\tcp-ecn-sample.pcap", 15)
+output_packets("..\\pcap\\udp_lite_normal_coverage_8-20.pcap", 15)
+output_packets("..\\pcap\\PPP-config.pcap", 15)
+output_packets("..\\pcap\\maccdc2012_00000_trim2.pcap", 15)
