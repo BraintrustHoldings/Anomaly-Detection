@@ -16,6 +16,8 @@ class TCP(ctypes.Structure):
                 ('seqnum', ctypes.c_uint),      # sequence number
                 ('acknum', ctypes.c_uint),      # acknowledgment number
                 ('data_offset', ctypes.c_uint), # data offset in bytes
+                ('reserved', ctypes.c_ushort),  # data offset in bytes
+                ('flags', ctypes.c_ushort),     # all the flas except ECN as one byte
                 ('ecn', ctypes.c_bool),         # ECN
                 ('cwr', ctypes.c_bool),         # CWR
                 ('ece', ctypes.c_bool),         # ECE
@@ -39,14 +41,25 @@ class TCP(ctypes.Structure):
         self.seqnum = fields[2]
         self.acknum = fields[3]
         
-        # Note: Data offset is stored in the first 4 bits of the 1 byte field[4].  The next
+        # Note: Data offset is stored in the first 4 bits of the 1 byte fields[4].  The next
         # 3 bits are reserved and the last bit contains the ECN flag.
         self.data_offset = 4 * (fields[4] >> 4)
+		
+        # Store the last 4 bits of fields[4] in reserved.  The last bit contains the ECN flag.
+        self.reserved = fields[4] & 0xf
+
+		# Get the flags from the 9 bits starting with the last bit of fields[4].
+        self.flags = fields[5] 
+        self.ecn = fields[4] & 1
+        self.cwr = fields[5] & 128
+        # 3 bits are reserved and the last bit contains the ECN flag.
+        self.reserved = fields[4] & 0xf
 
 		# Get the flags from the 9 bits starting with the last bit of field[4].
-        self.ns = fields[4] & 1
+        self.flags = fields[5] 
+        self.ecn = fields[4] & 1
         self.cwr = fields[5] & 128
-        self.ecn = fields[5] & 64
+        self.ece = fields[5] & 64
         self.urg = fields[5] & 32
         self.ack = fields[5] & 16
         self.psh = fields[5] & 8
@@ -75,8 +88,8 @@ class TCP(ctypes.Structure):
         if self.urg: str_flags += 'U'
         if self.psh: str_flags += 'P'
         if self.cwr: str_flags += 'C'
-        if self.ecn: str_flags += 'E'
-        if self.ns: str_flags += 'N'
+        if self.ece: str_flags += 'E'
+        if self.ecn: str_flags += 'N'
         packet = packet % (str_flags, self.src_port, self.dst_port, (len(self.payload) / 2))
         return packet
 
